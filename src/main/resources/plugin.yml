@@ -1,0 +1,23 @@
+name: ChestLock
+version: '1.0.0'
+main: com.chestlock.ChestLock
+api-version: '1.21'
+author: ChestLock Team
+description: A simple block protection plugin without external dependencies
+
+commands:
+  chestlock:
+    description: Main ChestLock command
+    usage: /chestlock [reload|help]
+    aliases: [cl, lock]
+
+permissions:
+  chestlock.lock:
+    description: Allows players to lock blocks
+    default: true
+  chestlock.admin:
+    description: Admin permissions to bypass all locks
+    default: op
+  chestlock.bypass:
+    description: Bypass all protections
+    default: false
