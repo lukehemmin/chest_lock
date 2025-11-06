@@ -21,3 +21,6 @@ bin/
 # Logs
 logs/
 *.log
+
+# GitHub workflows (add manually via GitHub UI due to permissions)
+.github/
