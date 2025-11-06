@@ -1,0 +1,96 @@
+# ChestLock Configuration
+
+# Storage settings
+storage:
+  # Storage type: YAML or MYSQL
+  # YAML: 파일로 저장 (간단, 소규모 서버 추천)
+  # MYSQL: MySQL/MariaDB 데이터베이스 (대규모 서버, 빠른 성능)
+  type: YAML
+
+  # MySQL/MariaDB settings (storage.type이 MYSQL일 때만 사용)
+  mysql:
+    host: localhost
+    port: 3306
+    database: chestlock
+    username: root
+    password: password
+    # Connection pool settings
+    pool:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+# Lockable blocks (supports all colors)
+lockable-blocks:
+  containers:
+    - CHEST
+    - TRAPPED_CHEST
+    - BARREL
+    - FURNACE
+    - BLAST_FURNACE
+    - SMOKER
+    - HOPPER
+    - DROPPER
+    - DISPENSER
+    - BREWING_STAND
+    - ENDER_CHEST
+  shulker-boxes:
+    - SHULKER_BOX
+    - WHITE_SHULKER_BOX
+    - ORANGE_SHULKER_BOX
+    - MAGENTA_SHULKER_BOX
+    - LIGHT_BLUE_SHULKER_BOX
+    - YELLOW_SHULKER_BOX
+    - LIME_SHULKER_BOX
+    - PINK_SHULKER_BOX
+    - GRAY_SHULKER_BOX
+    - LIGHT_GRAY_SHULKER_BOX
+    - CYAN_SHULKER_BOX
+    - PURPLE_SHULKER_BOX
+    - BLUE_SHULKER_BOX
+    - BROWN_SHULKER_BOX
+    - GREEN_SHULKER_BOX
+    - RED_SHULKER_BOX
+    - BLACK_SHULKER_BOX
+  doors:
+    - OAK_DOOR
+    - SPRUCE_DOOR
+    - BIRCH_DOOR
+    - JUNGLE_DOOR
+    - ACACIA_DOOR
+    - DARK_OAK_DOOR
+    - CRIMSON_DOOR
+    - WARPED_DOOR
+    - IRON_DOOR
+  trapdoors:
+    - OAK_TRAPDOOR
+    - SPRUCE_TRAPDOOR
+    - BIRCH_TRAPDOOR
+    - JUNGLE_TRAPDOOR
+    - ACACIA_TRAPDOOR
+    - DARK_OAK_TRAPDOOR
+    - CRIMSON_TRAPDOOR
+    - WARPED_TRAPDOOR
+    - IRON_TRAPDOOR
+  gates:
+    - OAK_FENCE_GATE
+    - SPRUCE_FENCE_GATE
+    - BIRCH_FENCE_GATE
+    - JUNGLE_FENCE_GATE
+    - ACACIA_FENCE_GATE
+    - DARK_OAK_FENCE_GATE
+    - CRIMSON_FENCE_GATE
+    - WARPED_FENCE_GATE
+
+# Messages
+messages:
+  prefix: '&8[&6ChestLock&8]&r'
+  no-permission: '&c이 블록에 접근할 권한이 없습니다.'
+  locked: '&a블록이 잠겼습니다!'
+  unlocked: '&a블록의 잠금이 해제되었습니다!'
+  already-locked: '&c이 블록은 이미 잠겨있습니다.'
+  not-locked: '&c이 블록은 잠겨있지 않습니다.'
+  not-owner: '&c당신은 이 블록의 소유자가 아닙니다.'
+  friend-added: '&a%player%님이 친구로 추가되었습니다.'
+  friend-removed: '&a%player%님이 친구에서 제거되었습니다.'
+  lock-hint: '&e스니킹 + 우클릭으로 블록을 잠글 수 있습니다!'
