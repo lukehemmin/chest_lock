@@ -24,16 +24,16 @@ public class BlockDataHandler {
     private final NamespacedKey hopperKey;
     private final NamespacedKey redstoneKey;
 
-    // Location-based storage for non-tile-entity blocks
-    private final LocationStorage locationStorage;
+    // Storage for non-tile-entity blocks (YAML or MySQL)
+    private final IBlockStorage storage;
 
-    public BlockDataHandler(ChestLock plugin) {
+    public BlockDataHandler(ChestLock plugin, IBlockStorage storage) {
         this.plugin = plugin;
         this.ownerKey = new NamespacedKey(plugin, "owner");
         this.friendsKey = new NamespacedKey(plugin, "friends");
         this.hopperKey = new NamespacedKey(plugin, "hopper");
         this.redstoneKey = new NamespacedKey(plugin, "redstone");
-        this.locationStorage = new LocationStorage(plugin);
+        this.storage = storage;
     }
 
     /**
@@ -239,32 +239,39 @@ public class BlockDataHandler {
 
     private void lockRegularBlock(Block block, UUID owner) {
         BlockProtection protection = new BlockProtection(owner);
-        locationStorage.save(block.getLocation(), protection);
+        storage.save(block.getLocation(), protection);
     }
 
     private void unlockRegularBlock(Block block) {
-        locationStorage.remove(block.getLocation());
+        storage.remove(block.getLocation());
     }
 
     private BlockProtection getProtectionFromLocation(Location location) {
-        return locationStorage.get(location);
+        return storage.get(location);
     }
 
     private void saveProtectionToLocation(Location location, BlockProtection protection) {
-        locationStorage.save(location, protection);
+        storage.save(location, protection);
     }
 
     /**
-     * Save all location-based protections to disk
+     * Save all location-based protections
      */
     public void saveAll() {
-        locationStorage.saveToFile();
+        storage.saveAll();
     }
 
     /**
-     * Load all location-based protections from disk
+     * Load all location-based protections
      */
     public void loadAll() {
-        locationStorage.loadFromFile();
+        storage.loadAll();
+    }
+
+    /**
+     * Close storage resources
+     */
+    public void close() {
+        storage.close();
     }
 }

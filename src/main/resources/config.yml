@@ -1,5 +1,25 @@
 # ChestLock Configuration
 
+# Storage settings
+storage:
+  # Storage type: YAML or MYSQL
+  # YAML: 파일로 저장 (간단, 소규모 서버 추천)
+  # MYSQL: MySQL/MariaDB 데이터베이스 (대규모 서버, 빠른 성능)
+  type: YAML
+
+  # MySQL/MariaDB settings (storage.type이 MYSQL일 때만 사용)
+  mysql:
+    host: localhost
+    port: 3306
+    database: chestlock
+    username: root
+    password: password
+    # Connection pool settings
+    pool:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
 # Lockable blocks (supports all colors)
 lockable-blocks:
   containers:

@@ -1,7 +1,7 @@
 package com.chestlock;
 
 import com.chestlock.commands.ChestLockCommand;
-import com.chestlock.data.BlockDataHandler;
+import com.chestlock.data.*;
 import com.chestlock.listeners.*;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,12 +12,13 @@ import java.util.Set;
 
 /**
  * Main plugin class for ChestLock
- * A block protection system without external dependencies
+ * A block protection system with YAML or MySQL storage
  */
 public class ChestLock extends JavaPlugin {
 
     private static ChestLock instance;
     private BlockDataHandler dataHandler;
+    private DatabaseManager databaseManager;
     private Set<Material> lockableBlocks;
 
     @Override
@@ -27,8 +28,16 @@ public class ChestLock extends JavaPlugin {
         // Save default config
         saveDefaultConfig();
 
+        // Initialize storage based on config
+        IBlockStorage storage = initializeStorage();
+        if (storage == null) {
+            getLogger().severe("Failed to initialize storage! Disabling plugin...");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         // Initialize data handler
-        dataHandler = new BlockDataHandler(this);
+        dataHandler = new BlockDataHandler(this, storage);
         dataHandler.loadAll();
 
         // Load lockable blocks from config
@@ -46,12 +55,54 @@ public class ChestLock extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Save all location-based protections
+        // Save and close storage
         if (dataHandler != null) {
-            dataHandler.saveAll();
+            dataHandler.close();
+        }
+
+        // Disconnect from database
+        if (databaseManager != null) {
+            databaseManager.disconnect();
         }
 
         getLogger().info("ChestLock has been disabled!");
+    }
+
+    /**
+     * Initialize storage based on config
+     */
+    private IBlockStorage initializeStorage() {
+        String storageType = getConfig().getString("storage.type", "YAML").toUpperCase();
+
+        getLogger().info("Initializing storage type: " + storageType);
+
+        try {
+            if (storageType.equals("MYSQL")) {
+                // Initialize MySQL storage
+                databaseManager = new DatabaseManager(this);
+                databaseManager.connect();
+
+                getLogger().info("Using MySQL storage");
+                return new MySQLStorage(this, databaseManager);
+            } else {
+                // Default to YAML storage
+                getLogger().info("Using YAML storage");
+                return new YamlStorage(this);
+            }
+        } catch (Exception e) {
+            getLogger().severe("Failed to initialize " + storageType + " storage: " + e.getMessage());
+
+            // Fallback to YAML if MySQL fails
+            if (storageType.equals("MYSQL")) {
+                getLogger().warning("Falling back to YAML storage...");
+                try {
+                    return new YamlStorage(this);
+                } catch (Exception ex) {
+                    getLogger().severe("Failed to initialize fallback YAML storage: " + ex.getMessage());
+                }
+            }
+            return null;
+        }
     }
 
     private void registerListeners() {
